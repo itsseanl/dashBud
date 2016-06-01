@@ -13,10 +13,16 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Media.Capture;
+using Windows.Media.Editing;
+using Windows.Media.Core;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
-
+using Windows.Devices.Sensors;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Devices.Geolocation;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -26,19 +32,30 @@ namespace dashBud
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     /// 
-    
-public sealed partial class MainPage : Page
+
+    public sealed partial class MainPage : Page
     {
         Windows.Media.Capture.MediaCapture captureManager;
+        private MediaComposition composition = new MediaComposition();
+
         bool isRecording;
         int recordingNum = 0;
-        public MainPage()
+
+        Geolocator geolocator = new Geolocator
+        {
+            DesiredAccuracy = PositionAccuracy.High,
+            MovementThreshold = 1    
+            
+        };
+
+        public MainPage() 
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            geolocator.PositionChanged += geolocator_PositionChanged;
+            getSpeed();
         }
-        
+
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
@@ -56,18 +73,52 @@ public sealed partial class MainPage : Page
 
             startCameraView();
         }
+
        
+
+       //initialize captureManager
         public async void startCameraView()
         {
             captureManager = new MediaCapture();
             await captureManager.InitializeAsync();
             viewFinder.Source = captureManager;
             await captureManager.StartPreviewAsync();
+            
+        }
+        public async void getSpeed()
+        {
+
+        }
+       
+        public async void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
+        {
+            var speed = args.Position.Coordinate.Speed.ToString();
+            var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                txtSpeedometer.Text = speed.ToString();
+            });
+
         }
 
-        private async void btnRecord_Click(object sender, RoutedEventArgs e)
+        //start and stop recording.
+        private void btnRecord_Click(object sender, RoutedEventArgs e)
         {
-            //recordings auto increment up to 5, then being saving over previous recordings
+            
+            incrementVideoFile();
+            //record video
+            if (isRecording == false)
+            {
+                startRecord();
+            }
+            //stop recording
+            else
+            {
+                stopRecord();
+            }
+        }
+        //recordings auto increment up to 5, then being saving over previous recordings
+        public void incrementVideoFile()
+        {
             if (recordingNum < 6)
             {
                 recordingNum++;
@@ -76,24 +127,24 @@ public sealed partial class MainPage : Page
             {
                 recordingNum = 1;
             }
-            //record video
-            if (isRecording == false)
-            {
-                isRecording = true;
-                //.replaceexisting allows for overwriting files with same name. only a max of 5 videos will exist at any given time
-                var videoFile = await KnownFolders.SavedPictures.CreateFileAsync("dashVideo" + recordingNum +".mp4", CreationCollisionOption.ReplaceExisting);
-                txtSpeedometer.Text = KnownFolders.SavedPictures.ToString();
-                MediaEncodingProfile fileFormat = new MediaEncodingProfile();
-                fileFormat = MediaEncodingProfile.CreateMp4(Windows.Media.MediaProperties.VideoEncodingQuality.Auto);
+        }
+        //start recording
+        public async void startRecord()
+        {
+            isRecording = true;
+            //.replaceexisting allows for overwriting files with same name. only a max of 5 videos will exist at any given time
+            var videoFile = await KnownFolders.SavedPictures.CreateFileAsync("dashVideo" + recordingNum + ".mp4", CreationCollisionOption.ReplaceExisting);
+            txtSpeedometer.Text = KnownFolders.SavedPictures.ToString();
+            MediaEncodingProfile fileFormat = new MediaEncodingProfile();
+            fileFormat = MediaEncodingProfile.CreateMp4(Windows.Media.MediaProperties.VideoEncodingQuality.Auto);
 
-                await captureManager.StartRecordToStorageFileAsync(fileFormat, videoFile);
-            }
-            //stop recording
-            else
-            {
-                isRecording = false;
-                await captureManager.StopRecordAsync();
-            }
+            await captureManager.StartRecordToStorageFileAsync(fileFormat, videoFile);
+        }
+        //stop recording
+        public async void stopRecord()
+        {
+            isRecording = false;
+            await captureManager.StopRecordAsync();
         }
     }
 }

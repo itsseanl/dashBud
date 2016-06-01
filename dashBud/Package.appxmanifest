@@ -33,5 +33,6 @@
     <Capability Name="removableStorage" />
     <DeviceCapability Name="microphone" />
     <DeviceCapability Name="webcam" />
+    <DeviceCapability Name="location" />
   </Capabilities>
 </Package>
