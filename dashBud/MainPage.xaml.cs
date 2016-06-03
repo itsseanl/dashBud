@@ -35,25 +35,44 @@ namespace dashBud
 
     public sealed partial class MainPage : Page
     {
-        Windows.Media.Capture.MediaCapture captureManager;
-        private MediaComposition composition = new MediaComposition();
-
-        bool isRecording;
-        int recordingNum = 0;
-
         Geolocator geolocator = new Geolocator
         {
             DesiredAccuracy = PositionAccuracy.High,
-            MovementThreshold = 1    
-            
+            MovementThreshold = 1
+
         };
+        
+        Windows.Media.Capture.MediaCapture captureManager;
+        MediaCapture mediaCap = null;
+        private MediaComposition composition = new MediaComposition();
+        bool isRecording;
+        int recordingNum = 0;
+        int x1, x2;
+        
 
         public MainPage() 
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            //ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+            //ManipulationStarted += (s, e) => x1 = (int)e.Position.X;
+            //ManipulationCompleted += (s, e) =>
+            //{
+            //    x2 = (int)e.Position.X;
+            //    if (x1 > x2)
+            //    {
+            //        Frame.Navigate(typeof(settings));
+            //        x1 = 0;
+            //        x2 = 0;
+            //    }
+            //};
+
+            startCameraView();
             geolocator.PositionChanged += geolocator_PositionChanged;
-            getSpeed();
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler<object>(timer_Tick);
+            timer.Start();
         }
 
         /// <summary>
@@ -71,10 +90,12 @@ namespace dashBud
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
 
-            startCameraView();
         }
 
-       
+       public void pageNavigation()
+        {
+
+        }
 
        //initialize captureManager
         public async void startCameraView()
@@ -83,14 +104,11 @@ namespace dashBud
             await captureManager.InitializeAsync();
             viewFinder.Source = captureManager;
             await captureManager.StartPreviewAsync();
-            
+                        
         }
-        public async void getSpeed()
-        {
-
-        }
+        
        
-        public async void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
+        public void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
         {
             var speed = args.Position.Coordinate.Speed.ToString();
             var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -98,6 +116,14 @@ namespace dashBud
                 txtSpeedometer.Text = speed.ToString();
             });
 
+        }
+
+        //display date/time 
+        public void timer_Tick(object sender, object e)
+        {
+            DateTime dt = DateTime.Now;
+
+            txtDateTime.Text = dt.ToString("MM/dd HH:mm:ss");
         }
 
         //start and stop recording.
@@ -132,19 +158,36 @@ namespace dashBud
         public async void startRecord()
         {
             isRecording = true;
+            incrementVideoFile();
             //.replaceexisting allows for overwriting files with same name. only a max of 5 videos will exist at any given time
             var videoFile = await KnownFolders.SavedPictures.CreateFileAsync("dashVideo" + recordingNum + ".mp4", CreationCollisionOption.ReplaceExisting);
-            txtSpeedometer.Text = KnownFolders.SavedPictures.ToString();
+
             MediaEncodingProfile fileFormat = new MediaEncodingProfile();
             fileFormat = MediaEncodingProfile.CreateMp4(Windows.Media.MediaProperties.VideoEncodingQuality.Auto);
+            //await captureManager.StartRecordToStorageFileAsync(fileFormat, videoFile);
 
-            await captureManager.StartRecordToStorageFileAsync(fileFormat, videoFile);
+
+            var screenCapture = Windows.Media.Capture.ScreenCapture.GetForCurrentView();
+            var mCISettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
+            mCISettings.VideoSource = screenCapture.VideoSource;
+            mCISettings.AudioSource = screenCapture.AudioSource;
+            mCISettings.StreamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.AudioAndVideo;
+
+            //initialize the local media capture object
+            mediaCap = new MediaCapture();
+            await mediaCap.InitializeAsync(mCISettings);
+
+            (App.Current as App).myMediaCapture = mediaCap;
+            await mediaCap.StartRecordToStorageFileAsync(fileFormat, videoFile);
+
+
         }
         //stop recording
         public async void stopRecord()
         {
             isRecording = false;
-            await captureManager.StopRecordAsync();
+            //await captureManager.StopRecordAsync();
+            await mediaCap.StopRecordAsync();
         }
     }
 }

@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.Media.Capture;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -25,6 +26,8 @@ namespace dashBud
     /// </summary>
     public sealed partial class App : Application
     {
+        public MediaCapture myMediaCapture { get; set; }
+        public bool isRecording { get; set; }
         private TransitionCollection transitions;
 
         /// <summary>
