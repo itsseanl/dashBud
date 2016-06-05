@@ -11,7 +11,7 @@
 
     <Grid>
         <CaptureElement x:Name="viewFinder" HorizontalAlignment="Left" Height="390" VerticalAlignment="Top" Width="632" Margin="-25,0,0,0"/>
-        <Button x:Name="btnRecord" Content="Record" HorizontalAlignment="Left" Margin="488,31,0,0" VerticalAlignment="Top" Click="btnRecord_Click" Foreground="Red">
+        <Button x:Name="btnRecord" Content="Record" HorizontalAlignment="Left" Margin="488,13,0,0" VerticalAlignment="Top" Click="btnRecord_Click" Foreground="Red" RequestedTheme="Light" BorderBrush="#FFFF0101" Background="#FFFFC4C4">
             <!--<Button.ContentTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -21,8 +21,10 @@
                 </DataTemplate>
             </Button.ContentTemplate>-->
         </Button>
-        <TextBlock x:Name="txtSpeedometer" HorizontalAlignment="Left" Margin="488,341,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="49" Width="109" FontSize="48" TextAlignment="Center"/>
-        <TextBlock x:Name="txtDateTime" HorizontalAlignment="Left" Margin="10,361,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="32"/>
+        <TextBlock x:Name="txtSpeedometer" HorizontalAlignment="Left" Margin="399,323,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Height="49" Width="109" FontSize="48" TextAlignment="Center"/>
+        <TextBlock x:Name="txtDateTime" HorizontalAlignment="Left" Margin="10,338,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="32"/>
+        <TextBlock x:Name="txtMilesorKph" HorizontalAlignment="Left" Margin="508,334,0,-11" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="32" Width="89"/>
+        <FlipView x:Name="flipView" HorizontalAlignment="Left" Margin="80,352,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Page>

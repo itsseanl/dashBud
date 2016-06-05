@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Input;
+using Windows.Storage.Pickers;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -24,43 +24,23 @@ namespace dashBud
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class settings : Page
+    public sealed partial class RecordedVideos : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-        int x1, x2;
 
-      
-        public settings()
+        public RecordedVideos()
         {
             this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-            this.navigationHelper.CanGoBack();
-
-            this.NavigationCacheMode = NavigationCacheMode.Required;
-            //string milesOrkph;
-
-            ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-            ManipulationStarted += (s, e) => x1 = (int)e.Position.X;
-            ManipulationCompleted += (s, e) =>
-            {
-                x2 = (int)e.Position.X;
-                if (x1 < x2)
-                {
-                    //Frame.Navigate(typeof(MainPage), new PassedData { milesOrKph = comboBox.SelectedValue.ToString() });
-                    
-                    x1 = 0;
-                    x2 = 0;
-                }
-            };
-            
+            FileOpenPicker videoPreview = new FileOpenPicker();
+            videoPreview.ViewMode = PickerViewMode.List;
+            videoPreview.SuggestedStartLocation = PickerLocationId.VideosLibrary;
+            videoPreview.FileTypeFilter.Add(".mp4");
         }
-       
 
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
@@ -124,28 +104,11 @@ namespace dashBud
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-           
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Object selectedItem = comboBox.SelectedItem;
-            string content = ((ComboBoxItem)comboBox.SelectedItem).Content.ToString();
-            App.milesOrKph = content;
-            localSettings.Values["milesOrKph"] = content;
-
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);
-            //Frame.Navigate(typeof(MainPage), new PassedData { milesOrKph = comboBox.SelectedValue.ToString() });
-
         }
 
         #endregion

@@ -28,6 +28,12 @@ namespace dashBud
     {
         public MediaCapture myMediaCapture { get; set; }
         public bool isRecording { get; set; }
+        public static string milesOrKph { get; set; }
+        public static int vidLength { get; set; }
+
+        Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+        Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+
         private TransitionCollection transitions;
 
         /// <summary>
@@ -38,6 +44,26 @@ namespace dashBud
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+            //set local values if null
+            //milesOrKph saves whether user wants mph or kph
+            if (localSettings.Values["milesOrKph"] == null)
+            {
+                localSettings.Values["milesOrKph"] = "mph";
+            }
+            //vidLength saves whether users want to record in 5 min or 10 min intervals
+            if (localSettings.Values["vidLength"] == null)
+            {
+                localSettings.Values["vidLength"] = 5;
+            }
+            //vidNumbers saves the last recording number so that previous videos are not prematurely overwritten
+            if (localSettings.Values["vidNumber"] == null)
+            {
+                localSettings.Values["vidNumber"] = 1;
+            }
+            milesOrKph = localSettings.Values["milesOrKph"].ToString(); //localSettings.Values["milesOrKph"];
+            vidLength = (int)localSettings.Values["vidLength"]; //localSettings.Values["vidLength"];
+
+           
         }
 
         /// <summary>

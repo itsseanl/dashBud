@@ -29,12 +29,17 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="294,19,0,0" VerticalAlignment="Top" Width="246" SelectionChanged="comboBox_SelectionChanged">
-                <ComboBoxItem Content="mph" IsSelected="True"/>
+            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="294,-1,0,0" VerticalAlignment="Top" Width="246" SelectionChanged="comboBox_SelectionChanged">
+                <ComboBoxItem Content="mph"/>
                 <ComboBoxItem Content="kph"/>
             </ComboBox>
-            <TextBlock x:Name="txtSelectSpeedOutput" HorizontalAlignment="Left" Margin="33,33,0,0" TextWrapping="Wrap" Text="Select Speed Metric" VerticalAlignment="Top" FontSize="26.667"/>
-            <Button x:Name="button" Content="Connect to OneDrive" HorizontalAlignment="Left" Margin="33,160,0,0" VerticalAlignment="Top" Width="507" Click="button_Click"/>
+            <TextBlock x:Name="txtSelectSpeedOutput" HorizontalAlignment="Left" Margin="33,15,0,0" TextWrapping="Wrap" Text="Speed Metric" VerticalAlignment="Top" FontSize="26.667"/>
+            <Button x:Name="button" Content="Connect to OneDrive" HorizontalAlignment="Left" Margin="33,203,0,0" VerticalAlignment="Top" Width="507" Click="button_Click"/>
+            <ComboBox x:Name="comboBox_VidLength" HorizontalAlignment="Left" Margin="294,93,0,0" VerticalAlignment="Top" Width="246" SelectionChanged="comboBox_SelectionChanged">
+                <ComboBoxItem Content="5 mins"/>
+                <ComboBoxItem Content="10 mins"/>
+            </ComboBox>
+            <TextBlock x:Name="txtSelectVidLength" HorizontalAlignment="Left" Margin="33,109,0,0" TextWrapping="Wrap" Text="Video Length" VerticalAlignment="Top" FontSize="26.667"/>
 
         </Grid>
     </Grid>
