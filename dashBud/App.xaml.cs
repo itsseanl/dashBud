@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.Media.Capture;
+using Windows.Phone.UI.Input;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -62,10 +63,24 @@ namespace dashBud
             }
             milesOrKph = localSettings.Values["milesOrKph"].ToString(); //localSettings.Values["milesOrKph"];
             vidLength = (int)localSettings.Values["vidLength"]; //localSettings.Values["vidLength"];
+            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
-           
+
         }
+        private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
+        {
+            Frame frame = Window.Current.Content as Frame;
+            if (frame == null)
+            {
+                return;
+            }
 
+            if (frame.CanGoBack)
+            {
+                frame.GoBack();
+                e.Handled = true;
+            }
+        }
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used when the application is launched to open a specific file, to display

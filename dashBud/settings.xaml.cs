@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Input;
+using Windows.Phone.UI.Input;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -44,6 +45,7 @@ namespace dashBud
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
             //string milesOrkph;
+            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
             ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
             ManipulationStarted += (s, e) => x1 = (int)e.Position.X;
@@ -52,7 +54,7 @@ namespace dashBud
                 x2 = (int)e.Position.X;
                 if (x1 < x2)
                 {
-                    //Frame.Navigate(typeof(MainPage), new PassedData { milesOrKph = comboBox.SelectedValue.ToString() });
+                    Frame.Navigate(typeof(RecordedVideos));
                     
                     x1 = 0;
                     x2 = 0;
@@ -60,7 +62,19 @@ namespace dashBud
             };
             
         }
-       
+
+        private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
+        {
+            Frame frame = Window.Current.Content as Frame;
+            this.Frame.Navigate(typeof(MainPage));
+
+        }
+
+        //public void HardwareButtons_Backpressed(object sender, BackClickEventArgs e)
+        //{
+        //    Frame frame = Window.Current.Content as Frame;
+        //    this.Frame.Navigate(typeof(MainPage));
+        //}
 
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.

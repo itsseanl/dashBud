@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot" RenderTransformOrigin="0.499,0.387">
 
         <Grid.ChildrenTransitions>
             <TransitionCollection>
@@ -17,19 +17,23 @@
         </Grid.ChildrenTransitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="151.084"/>
+            <RowDefinition Height="38.916"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <!-- Title Panel -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="MY APPLICATION" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="page title" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        <StackPanel Grid.Row="0" Margin="19,0,0,0" Grid.RowSpan="2">
+            <TextBlock Text="dashBud" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}">
+            	<Run Text="Saved Footage"/>
+            	<LineBreak/>
+            	<Run/>
+            </TextBlock>
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-
-        </Grid>
+        <Grid x:Name="ContentRoot" Margin="19,135,19,0" Grid.RowSpan="3"/>
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="270" Margin="10,120,0,0" VerticalAlignment="Top" Width="578" Grid.RowSpan="3"/>
     </Grid>
 </Page>

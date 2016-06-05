@@ -24,7 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.System.Display;
-
+ 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
 namespace dashBud
@@ -67,22 +67,28 @@ namespace dashBud
                 {
                     x1 = 0;
                     x2 = 0;
-                    Frame.Navigate(typeof(settings));
-                    
+                    goToSettings();
                 }
             };
           
 
             txtMilesorKph.Text = App.milesOrKph;
             recordingNum = Convert.ToInt32(localSettings.Values["vidNumber"]);
-            startCameraView();
             geolocator.PositionChanged += geolocator_PositionChanged;
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler<object>(timer_Tick);
             timer.Start();
-            
-        }
+            startCameraView();
 
+        }
+        public async void goToSettings()
+        {
+            await captureManager.StopPreviewAsync();
+            viewFinder.Source = null;
+            this.Frame.Navigate(typeof(settings));
+            
+
+        }
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
@@ -97,25 +103,20 @@ namespace dashBud
             // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
-            
+            startCameraView();
             txtMilesorKph.Text = App.milesOrKph;
 
 
         }
-        public void onReturnedTo()
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
-
+           // await captureManager.StopPreviewAsync();
         }
-
-       public void pageNavigation()
-        {
-
-        }
-
-        
+       
        //initialize captureManager
         public async void startCameraView()
         {
+
             if (captureManager == null)
             {
                 captureManager = new MediaCapture();
